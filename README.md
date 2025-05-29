@@ -151,4 +151,5 @@ As an answer to this question, provide in Blackboard (question 2):
 
 To obtain credit for this question:
 - The secrets management implementation must work#   e x a m _ p r a c t i c e  
+ #   e x a m _ p r a c t i c e  
  
