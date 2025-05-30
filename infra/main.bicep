@@ -58,6 +58,6 @@ module postgreSQLDatabase 'modules/postgre-sql-db.bicep' = {
   name: 'postgreSQLDatabase'
   params: {
     name: postgreSQLDatabaseName
-    postgreSqlServerName: postgreSQLServerName
+    postgreSqlServerName: postgreSQLServer.outputs.serverName
   }
 }
