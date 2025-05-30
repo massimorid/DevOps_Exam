@@ -61,3 +61,24 @@ module postgreSQLDatabase 'modules/postgre-sql-db.bicep' = {
     postgreSqlServerName: postgreSQLServer.outputs.serverName
   }
 }
+
+//Deploy App Service Container
+module appServiceContainer 'modules/app-service-container.bicep' = {
+  name: 'appServiceContainer'
+  params: {
+    location: location
+    name: appServiceContainerBackendName
+    appServicePlanId: appServicePlan.outputs.id
+    dockerRegistryName: containerRegistryName
+    dockerRegistryServerUserName: containerRegistry.outputs.acrUsername
+    dockerRegistryServerPassword: containerRegistry.outputs.acrPassword0
+    dockerRegistryImageName: 'backend'
+    dockerRegistryImageVersion: 'latest'
+    appSettings: [
+      {
+        name: 'WEBSITES_PORT'
+        value: '8080'
+      }
+    ]
+  }
+}
