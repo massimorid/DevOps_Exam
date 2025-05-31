@@ -1,5 +1,7 @@
 param name string
 param location string = resourceGroup().location
+param keyVaultName string
+param ServicePrincipalId string = '25d8d697-c4a2-479f-96e0-15593a830ae5'
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   name: name
@@ -13,6 +15,49 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-07-01' =
   
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
+  name: keyVaultName
+  scope: resourceGroup()
+}
+
+
+// Store the registry admin password in Key Vault
+resource registryPasswordSecret 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+  parent: keyVault
+  name: 'registry-password'
+  properties: {
+    value: containerRegistry.listCredentials().passwords[0].value // Fetches the registry password dynamically
+  }
+}
+
+// Store the registry admin username in Key Vault
+resource registryUsernameSecret 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+  parent: keyVault
+  name: 'registry-username'
+  properties: {
+    value: containerRegistry.name
+  }
+}
+
+resource acrPushRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(containerRegistry.id, ServicePrincipalId, 'acrpush')
+  scope: containerRegistry
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8311e382-0749-4cb8-b61a-304f252e45ec')
+    principalId: ServicePrincipalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource acrPullRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(containerRegistry.id, ServicePrincipalId, 'acrpull')
+  scope: containerRegistry
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+    principalId: ServicePrincipalId
+    principalType: 'ServicePrincipal'
+  }
+}
 //Extra exercise: declare a deployed Key Vault as existing
 
 //Extra exercise: store the Container Registry (username, password 0, password 1) as key vault secrets
