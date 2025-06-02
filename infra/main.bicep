@@ -14,7 +14,7 @@ param administratorPassword string
 
 
 
-//Deploy Key Vault
+//Deploy Key VaulT
 module keyVault 'modules/key-vault.bicep' = {
   name: 'keyVault'
   params: {
