@@ -16,6 +16,12 @@
         },
         "postgreSQLServerName": {
             "value": "mridella-dbsrv" 
+        },
+        "keyVaultName": {
+            "value": "mridella-kv" 
+        },
+        "userAlias": {
+            "value": "mridella" 
         }
     }
 }
