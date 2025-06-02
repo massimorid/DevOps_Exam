@@ -18,7 +18,7 @@
             "value": "mridella-dbsrv" 
         },
         "keyVaultName": {
-            "value": "mridella-kv" 
+            "value": "mridella-kv1" 
         },
         "userAlias": {
             "value": "mridella" 
