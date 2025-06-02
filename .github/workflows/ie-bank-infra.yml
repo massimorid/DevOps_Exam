@@ -20,25 +20,29 @@ jobs:
       # GitHub action: Write step to checkout code
       - uses: actions/checkout@main
 
-
       # Exercise I
-      # GitHub action: W
+      # GitHub action: Write step to linter main.bicep
       - name: Run Bicep linter
         run: az bicep build --file ./infra/main.bicep
+
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Development'
+      name: 'uat'
 
     steps:
+      # Exercise II
+      # GitHub action: Write step to checkout code
       - uses: actions/checkout@main
     
+      # Exercise II
+      # GitHub action: Write step to login in to Azure. You can use the repository secret AZURE_CREDENTIALS
       - uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
+
       - name: deploy
         uses: azure/arm-deploy@v2
         with:

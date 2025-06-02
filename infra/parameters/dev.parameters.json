@@ -2,26 +2,21 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        
         "appServiceContainerBackendName": {
-            "value": "mridella-asc-backend2" 
+            "value": "mridella-asc-backend" 
         },
         "appServicePlanName": {
-            "value": "mridella-asp2" 
+            "value": "mridella-asp" 
         },
         "containerRegistryName": {
-            "value": "mridellaacr2" 
+            "value": "mridellaacr" 
         },
         "postgreSQLDatabaseName": {
-            "value": "mridella-db2" 
+            "value": "mridella-db" 
         },
         "postgreSQLServerName": {
-            "value": "mridella-dbsrv2" 
-        },
-        "keyVaultName": {
-            "value": "mridella-kv2" 
-        },
-        "userAlias": {
-            "value": "mridella" 
+            "value": "mridella-dbsrv" 
         },
         "administratorLogin": {
         "value": "${{ secrets.DBUSER }}"
