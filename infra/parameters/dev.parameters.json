@@ -3,22 +3,22 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "appServiceContainerBackendName": {
-            "value": "mridella-asc-backend" 
+            "value": "mridella-asc-backend2" 
         },
         "appServicePlanName": {
-            "value": "mridella-asp" 
+            "value": "mridella-asp2" 
         },
         "containerRegistryName": {
-            "value": "mridellaacr" 
+            "value": "mridellaacr2" 
         },
         "postgreSQLDatabaseName": {
-            "value": "mridella-db" 
+            "value": "mridella-db2" 
         },
         "postgreSQLServerName": {
-            "value": "mridella-dbsrv" 
+            "value": "mridella-dbsrv2" 
         },
         "keyVaultName": {
-            "value": "mridella-kv1" 
+            "value": "mridella-kv2" 
         },
         "userAlias": {
             "value": "mridella" 
