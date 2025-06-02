@@ -22,12 +22,6 @@
         },
         "userAlias": {
             "value": "mridella" 
-        },
-        "postgreSQLAdminLogin": {
-            "value": "${{secrets.DBUSER}}"
-        },
-        "postgreSQLAdminPassword": {
-            "value": "${{secrets.DBPASS}}"
         }
     }
 }
