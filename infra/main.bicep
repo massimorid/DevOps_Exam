@@ -1,5 +1,4 @@
 // Exercise II: Configure the input parameters to set up your development environment
-param userAlias string 
 param appServicePlanName string
 param containerRegistryName string
 param keyVaultName string
@@ -7,9 +6,9 @@ param postgreSQLServerName string
 param postgreSQLDatabaseName string
 param location string = resourceGroup().location
 @secure()
-param postgreSQLAdminPassword string 
+param administratorPassword string 
 @secure()
-param postgreSQLAdminLogin string
+param administratorLogin string
 
 module containerRegistry 'modules/container-registry.bicep' = {
   name: 'containerRegistry'
@@ -42,8 +41,8 @@ module postgreSQLServer 'modules/postgre-sql-server.bicep' = {
   params: {
     location: location
     name: postgreSQLServerName
-    administratorLogin: postgreSQLAdminLogin
-    administratorPassword: postgreSQLAdminPassword
+    administratorLogin: administratorLogin
+    administratorPassword: administratorPassword
   }
 }
 

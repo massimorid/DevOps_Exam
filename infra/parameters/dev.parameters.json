@@ -22,6 +22,12 @@
         },
         "userAlias": {
             "value": "mridella" 
+        },
+        "administratorLogin": {
+        "value": "${{ secrets.DBUSER }}"
+        },
+        "administratorPassword": {
+        "value": "${{ secrets.DBPASS }}"
         }
     }
 }
