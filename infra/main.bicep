@@ -1,23 +1,29 @@
 // Exercise II: Configure the input parameters to set up your development environment
+param userAlias string = 'mridella'
+param keyVaultName string = '${userAlias}-kv'
+param appServiceContainerBackendName string
 param appServicePlanName string
 param containerRegistryName string
-param keyVaultName string
 param postgreSQLServerName string
 param postgreSQLDatabaseName string
 param location string = resourceGroup().location
 @secure()
-param administratorPassword string 
-@secure()
 param administratorLogin string
+@secure()
+param administratorPassword string
 
-module containerRegistry 'modules/container-registry.bicep' = {
-  name: 'containerRegistry'
+
+
+//Deploy Key Vault
+module keyVault 'modules/key-vault.bicep' = {
+  name: 'keyVault'
   params: {
     location: location
-    name: containerRegistryName
+    name: keyVaultName
   }
 }
 
+//Deploy App Service Plan
 module appServicePlan 'modules/app-service-plan.bicep' = {
   name: 'appServicePlan'
   params: {
@@ -27,15 +33,16 @@ module appServicePlan 'modules/app-service-plan.bicep' = {
   }
 }
 
-module keyVault 'modules/key-vault.bicep' = {
-  name: 'keyVault'
+//Deploy Container Registry
+module containerRegistry 'modules/container-registry.bicep' = {
+  name: 'containerRegistry'
   params: {
     location: location
-    name: keyVaultName
-    roleAssignments: []
+    name: containerRegistryName
   }
 }
 
+//Deploy PostgreSQL Server
 module postgreSQLServer 'modules/postgre-sql-server.bicep' = {
   name: 'postgreSQLServer'
   params: {
@@ -46,10 +53,32 @@ module postgreSQLServer 'modules/postgre-sql-server.bicep' = {
   }
 }
 
+//Deploy PostgreSQL Database
 module postgreSQLDatabase 'modules/postgre-sql-db.bicep' = {
   name: 'postgreSQLDatabase'
   params: {
     name: postgreSQLDatabaseName
-    postgreSqlServerName: postgreSQLServerName
+    postgreSqlServerName: postgreSQLServer.outputs.name
+  }
+}
+
+//Deploy App Service Container
+module appServiceContainer 'modules/app-service-container.bicep' = {
+  name: 'appServiceContainer'
+  params: {
+    location: location
+    name: appServiceContainerBackendName
+    appServicePlanId: appServicePlan.outputs.id
+    dockerRegistryName: containerRegistryName
+    dockerRegistryServerUserName: containerRegistry.outputs.acrUsername
+    dockerRegistryServerPassword: containerRegistry.outputs.acrPassword0
+    dockerRegistryImageName: 'backend'
+    dockerRegistryImageVersion: 'latest'
+    appSettings: [
+      {
+        name: 'WEBSITES_PORT'
+        value: '8080'
+      }
+    ]
   }
 }
