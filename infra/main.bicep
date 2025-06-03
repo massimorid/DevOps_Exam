@@ -1,20 +1,99 @@
 // Exercise II: Configure the input parameters to set up your development environment
-param userAlias string
+param userAlias string = 'mridella'
+param keyVaultName string = '${userAlias}-kv'
 param appServiceContainerBackendName string
 param appServicePlanName string
 param containerRegistryName string
-param keyVaultName string
 param postgreSQLServerName string
 param postgreSQLDatabaseName string
 param location string = resourceGroup().location
+@secure()
+param administratorLogin string
+@secure()
+param administratorPassword string
 
-// Exercise II: Configure the deployment of the appropriate modules for your hosting infrastructure. This is example code for a module deployment:
-module containerRegistry 'modules/container-registry.bicep' = { //path to the module you want to deploy
-  name: 'cr-${userAlias}' //Always include your userAlias within the name of the module deployment in order to avoid conflicts with other student's deployment
+
+
+//Deploy Key VaulT
+module keyVault 'modules/key-vault.bicep' = {
+  name: 'keyVault'
   params: {
-    //Configure the required parameters for your module
+    location: location
+    name: keyVaultName
   }
-  dependsOn: [
-    //Set up the dependencies with other modules
-  ]
+}
+
+//Deploy App Service Plan
+module appServicePlan 'modules/app-service-plan.bicep' = {
+  name: 'appServicePlan'
+  params: {
+    location: location
+    appServicePlanName: appServicePlanName
+    skuName: 'B1'
+  }
+}
+
+//Deploy Container Registry
+module containerRegistry 'modules/container-registry.bicep' = {
+  name: 'containerRegistry'
+  params: {
+    location: location
+    name: containerRegistryName
+  }
+}
+
+//Deploy PostgreSQL Server
+module postgreSQLServer 'modules/postgre-sql-server.bicep' = {
+  name: 'postgreSQLServer'
+  params: {
+    location: location
+    name: postgreSQLServerName
+    administratorLogin: administratorLogin
+    administratorPassword: administratorPassword
+  }
+}
+
+//Deploy PostgreSQL Database
+module postgreSQLDatabase 'modules/postgre-sql-db.bicep' = {
+  name: 'postgreSQLDatabase'
+  params: {
+    name: postgreSQLDatabaseName
+    postgreSqlServerName: postgreSQLServer.outputs.name
+  }
+}
+
+//Deploy App Service Container
+module appServiceContainer 'modules/app-service-container.bicep' = {
+  name: 'appServiceContainer'
+  params: {
+    location: location
+    name: appServiceContainerBackendName
+    appServicePlanId: appServicePlan.outputs.id
+    dockerRegistryName: containerRegistryName
+    dockerRegistryServerUserName: containerRegistry.outputs.acrUsername
+    dockerRegistryServerPassword: containerRegistry.outputs.acrPassword0
+    dockerRegistryImageName: 'backend'
+    dockerRegistryImageVersion: 'latest'
+    appSettings: [
+      {
+        name: 'WEBSITES_PORT'
+        value: '8080'
+      }, {
+        name: 'ENV'
+        value: 'development'
+      }, {
+        name: 'DBUSER'
+        value: administratorLogin
+      }, {
+        name: 'DBPASS'
+        value: administratorPassword
+      }, {
+        name: 'DBHOST'
+        value: '${postgreSQLServer.outputs.name}.postgres.database.azure.com'
+      }, {
+        name: 'DBNAME'
+        value: postgreSQLDatabaseName
+      }
+    ]
+  }
 }
