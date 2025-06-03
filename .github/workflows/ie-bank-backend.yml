@@ -12,7 +12,6 @@ env:
   IMAGE_NAME: mridella-asc-backend
   REGISTRY_USERNAME: mridellaacr
   REGISTRY_PASSWORD1: MoJ5rvIaesUj76SJK3ogb2Sx/fJputQVN46VBAi0ib+ACRAy6BKR
-  REGISTRY_PASSWORD2: taMI34n43KaDsCwiVKhApIJHGcNzieb1WFAEQl1IkH+ACRC9J+Ml
 
 jobs:
   build:
@@ -92,4 +91,3 @@ jobs:
         with:
           app-name: ${{ env.BACKEND_WEBAPP_DEV }}
           images: ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.IMAGE_NAME }}-dev
-    
