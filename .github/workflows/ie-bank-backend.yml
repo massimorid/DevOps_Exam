@@ -56,8 +56,7 @@ jobs:
         with:
           login-server: ${{ env.REGISTRY_USERNAME }}.azurecr.io
           username: ${{ env.REGISTRY_USERNAME }}
-          password1: ${{ env.REGISTRY_PASSWORD1 }}
-          password2: ${{ env.REGISTRY_PASSWORD2 }}
+          password: ${{ env.REGISTRY_PASSWORD1 }}
       
       # GitHub action: Write step to set your docker image version
       # You can use the environment variable IMAGE_NAME
