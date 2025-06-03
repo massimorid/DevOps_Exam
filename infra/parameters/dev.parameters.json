@@ -6,11 +6,9 @@
         
         "appServicePlanName": {
             "value": "mrangel-asp" 
-        },
-        
-        "postgreSQLDatabaseName": {
-            "value": "mrangel-db" 
         }
+    
+        
         
     }
 }
