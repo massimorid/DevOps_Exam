@@ -20,7 +20,12 @@ jobs:
     env:
       ENV: ghci
 
-    #steps:
+    steps:
+      - name: Test with pytest
+        working-directory: ./backend
+        run: |
+          python -m pytest --cov=iebank_api -v
+
       # Exercise IV
       # GitHub action: Write step to checkout code.
 
@@ -56,7 +61,7 @@ jobs:
     environment:
       name: 'Development'
 
-    #steps:
+    steps:
       # Exercise IV
       # GitHub action: Write step to login in to Azure.
       # You can use the repository secret AZURE_CREDENTIALS
