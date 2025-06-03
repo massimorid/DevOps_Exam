@@ -78,6 +78,21 @@ module appServiceContainer 'modules/app-service-container.bicep' = {
       {
         name: 'WEBSITES_PORT'
         value: '8080'
+      }, {
+        name: 'ENV'
+        value: 'development'
+      }, {
+        name: 'DBUSER'
+        value: administratorLogin
+      }, {
+        name: 'DBPASS'
+        value: administratorPassword
+      }, {
+        name: 'DBHOST'
+        value: '${postgreSQLServer.outputs.name}.postgres.database.azure.com'
+      }, {
+        name: 'DBNAME'
+        value: postgreSQLDatabaseName
       }
     ]
   }
