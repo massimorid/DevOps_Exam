@@ -6,9 +6,25 @@
         
         "appServicePlanName": {
             "value": "mrangel-asp" 
+        },
+        "containerRegistryName": {
+            "value": "mrangelacr" 
+        },
+        "postgreSQLServerName": {
+            "value": "mrangel-dbsrv" 
+        },
+        "administratorLogin": {
+            "value": "${{ secrets.DBUSER }}"
+        },
+        "administratorPassword": {
+            "value": "${{ secrets.DBPASS }}"
+        },
+        "postgreSQLDatabaseName": {
+            "value": "mrangel-db" 
+        },
+        "appServiceContainerBackendName": {
+            "value": "mrangel-app" 
         }
-    
-        
         
     }
 }
