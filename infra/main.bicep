@@ -8,13 +8,13 @@ param postgreSQLServerName string
 param postgreSQLDatabaseName string
 param location string = resourceGroup().location
 
-// Exercise II: Configure the deployment of the appropriate modules for your hosting infrastructure. This is example code for a module deployment:
-module containerRegistry 'modules/container-registry.bicep' = { //path to the module you want to deploy
-  name: 'cr-${userAlias}' //Always include your userAlias within the name of the module deployment in order to avoid conflicts with other student's deployment
+
+//Deploy App Service Plan
+module appServicePlan 'modules/app-service-plan.bicep' = {
+  name: 'appServicePlan'
   params: {
-    //Configure the required parameters for your module
+    location: location
+    appServicePlanName: appServicePlanName
+    skuName: 'B1'
   }
-  dependsOn: [
-    //Set up the dependencies with other modules
-  ]
 }
