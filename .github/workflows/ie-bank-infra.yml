@@ -53,5 +53,5 @@ jobs:
             subscriptionId: ${{ env.SUBSCRIPTION_ID_DEV }}
             resourceGroupName: ${{ env.RESOURCE_GROUP_DEV }}
             template: ./infra/main.bicep
-            parameters: ./infra/parameters/dev.parameters.json administratorPassword=${{ secrets.DBPASS }} administratorLogin=${{ secrets.DBUSER }}
+            parameters: ./infra/parameters/dev.parameters.json  
             deploymentName: ${{ env.USER_ALIAS }}
