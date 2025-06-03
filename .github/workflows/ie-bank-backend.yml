@@ -8,10 +8,11 @@ on:
       - '.github/workflows/ie-bank-backend.yml'
 
 env:
-  BACKEND_WEBAPP_DEV: #Exercise IV: set the name of your web app
-  IMAGE_NAME: #Exercise IV: set the name of container image
-  REGISTRY_USERNAME: #Exercise IV: set the user name credentials of your container registry
-  REGISTRY_PASSWORD: #Exercise IV: set the user name credentials of your container registry
+  BACKEND_WEBAPP_DEV: mridella-asc-backend
+  IMAGE_NAME: mridella-asc-backend
+  REGISTRY_USERNAME: mridellaacr
+  REGISTRY_PASSWORD1: MoJ5rvIaesUj76SJK3ogb2Sx/fJputQVN46VBAi0ib+ACRAy6BKR
+  REGISTRY_PASSWORD2: taMI34n43KaDsCwiVKhApIJHGcNzieb1WFAEQl1IkH+ACRC9J+Ml
 
 jobs:
   build:
@@ -21,31 +22,52 @@ jobs:
       ENV: ghci
 
     steps:
-      # Exercise IV
-      # GitHub action: Write step to checkout code.
+      - uses: actions/checkout@main
 
-      # Exercise IV
-      # GitHub action: Write step to set up Python 3.11.
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-      # Exercise IV
-      # GitHub action: Write step to upgrade Python pip. Consider using the `working-directory: ./backend` setting
-    
-      # Exercise IV
-      # GitHub action: Write step to install dependencies with pip. Consider using the `working-directory: ./backend` setting
+      - name: Upgrade pip
+        run: |
+          python -m pip install --upgrade pip
 
-      # Exercise IV
-      # GitHub action: Write step to install flake8 and pytest, and use flake8 to check code syntax. Consider using the `working-directory: ./backend` setting
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
 
-      # Exercise IV
-      # GitHub action: Write step to run python tests with pytest. Consider using the `working-directory: ./backend` setting
-    
-      # Exercise IV
-      # GitHub action: Write step to login in to Azure Container Registry.
-      # Use the GitHub repository secrets REGISTRY_USERNAME and REGISTRY_PASSWORD. Get the values from the Azure portal
+      - name: Lint with flake8
+        working-directory: ./backend
+        run: |
+          pip install flake8 pytest
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       
-      # Exercise IV
+      - name: Test with pytest
+        working-directory: ./backend
+        run: |
+          python -m pytest --cov=iebank_api -v
+      
+      - name: 'Login to Azure Container Registry'
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.REGISTRY_USERNAME }}.azurecr.io
+          username: ${{ env.REGISTRY_USERNAME }}
+          password1: ${{ env.REGISTRY_PASSWORD1 }}
+          password2: ${{ env.REGISTRY_PASSWORD2 }}
+      
       # GitHub action: Write step to set your docker image version
       # You can use the environment variable IMAGE_NAME
+      - name: 'Setting your docker image version'
+        run: |
+            docker build ./backend -t ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.IMAGE_NAME }}-dev
+            docker tag ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.IMAGE_NAME }}-dev ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
+            docker push ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.IMAGE_NAME }}-dev:${{ github.sha }}
+            docker push ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.IMAGE_NAME }}-dev
+
 
       #Exercise IV
       # GitHub action: Write step to build and push your Docker image into the Container Registry
@@ -60,7 +82,15 @@ jobs:
       # Exercise IV
       # GitHub action: Write step to login in to Azure.
       # You can use the repository secret AZURE_CREDENTIALS
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Exercise IV
-      # GitHub action: Write step to set up the published container image for your Azure container web app
+      # GitHub action: Write step to set up the published container image for your Azure container web 
+      - name: 'Set up the published container image for your Azure container web'
+        uses: azure/web-app-deploy@v2
+        with:
+          app-name: ${{ env.BACKEND_WEBAPP_DEV }}
+          images: ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.IMAGE_NAME }}-dev
     
